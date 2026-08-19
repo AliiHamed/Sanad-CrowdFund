@@ -104,8 +104,8 @@
     .link-subtle { color: #64748b; font-weight: 600; text-decoration: none; font-size: 0.9rem; }
     .link-subtle:hover { color: #0f172a; }
 
-    /* شبكة البيانات المعدلة */
-    .info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    /* شبكة البيانات المعدلة (تم تعديلها لتعرض عمودين لتنسيق متوازن ومثالي) */
+    .info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
     @media (max-width: 600px) { .info-grid { grid-template-columns: 1fr; } }
     
     .info-box { background: #f8fafc; border: 1px solid #e2e8f0; padding: 16px; border-radius: 12px; }
@@ -178,7 +178,7 @@
                 <span class="info-label">Birth Date</span>
                 <span class="info-value">{{ request.user.userprofile.birth_date|date:"d M Y"|default:"-" }}</span>
             </div>
-            <!-- حقل الفيسبوك اللي ضفناه -->
+            <!-- حقل الفيسبوك -->
             <div class="info-box">
                 <span class="info-label">Facebook Profile</span>
                 <span class="info-value">
