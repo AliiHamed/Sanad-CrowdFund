@@ -1,0 +1,239 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Sanad - CrowdFund{% endblock %}</title>
+    <link rel="icon" type="image/png" href="{% static 'sanad-logo.png' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+    <!-- 📌 تمرير اسم المستخدم برمجياً للشات بوت -->
+    <script>
+        window.USER_NAME = "{{ request.user.first_name|default:'Guest' }}";
+    </script>
+
+    <style>
+        /* منع السكرول الأفقي وتثبيت عرض الصفحة على الموبايل */
+        html, body {
+            overflow-x: hidden !important;
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* الـ Navbar الاحترافي المتناسق مع الهيدر والفوتر (Dark Theme) */
+        .modern-navbar {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: #0f172a;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .nav-container {
+            max-width: 1250px;
+            margin: 0 auto;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        .nav-logo {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #ffffff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-logo span {
+            color: #10b981;
+        }
+
+        .nav-links-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .nav-link {
+            color: #94a3b8;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: color 0.2s ease;
+        }
+
+        .nav-link:hover {
+            color: #ffffff;
+        }
+
+        /* زرار بدء حملة جديد (Start Campaign) */
+        .btn-nav-create {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-decoration: none;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            transition: all 0.2s;
+        }
+        .btn-nav-create:hover {
+            background: #10b981;
+            color: white;
+        }
+
+        /* زرار تسجيل الدخول/الخروج */
+        .btn-nav-auth {
+            background: #2563eb;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .btn-nav-auth:hover {
+            background: #1d4ed8;
+        }
+
+        /* زرار القائمة للموبايل (Hamburger Menu) */
+        .menu-toggle {
+            display: none;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+        }
+
+        /* التجاوب مع الهواتف والتابلت (رفعنا العرض إلى 992px عشان يظهر زرار القائمة بوضوح) */
+        @media (max-width: 992px) {
+            .menu-toggle {
+                display: block;
+            }
+
+            .nav-links-wrapper {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: #0f172a;
+                padding: 20px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+                gap: 15px;
+                align-items: flex-start;
+                box-sizing: border-box;
+            }
+
+            .nav-links-wrapper.active {
+                display: flex;
+            }
+
+            .toast-container {
+                left: 20px !important;
+                right: 20px !important;
+                min-width: unset !important;
+            }
+        }
+    </style>
+
+    {% block extra_css %}{% endblock %}
+  </head>
+
+  <body>
+    {% block navbar %}
+    <nav class="modern-navbar">
+      <div class="nav-container">
+        <a href="{% url 'home' %}" class="nav-logo">
+          <span>Sanad</span> CrowdFund
+        </a>
+        
+        <!-- زرار القائمة للموبايل -->
+        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+
+        <div class="nav-links-wrapper">
+          <a href="{% url 'home' %}" class="nav-link">Home</a>
+          <a href="{% url 'projects' %}" class="nav-link">Projects</a>
+          
+          {% if request.user.is_authenticated %}
+              <a href="{% url 'create_project' %}" class="btn-nav-create">+ Start Campaign</a>
+              <a href="{% url 'profile' %}" class="nav-link">Profile</a>
+              <a href="{% url 'logout' %}" class="nav-link" style="color: #f87171;">Logout</a>
+          {% else %}
+              <a href="{% url 'login' %}" class="nav-link">Login</a>
+              <a href="{% url 'register' %}" class="btn-nav-auth">Register</a>
+          {% endif %}
+        </div>
+      </div>
+    </nav>
+    {% endblock %}
+
+    {% if messages %}
+    <div class="toast-container" style="position: fixed; top: 90px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;">
+        {% for message in messages %}
+            <div class="custom-toast toast-{{ message.tags }}" style="display: flex; align-items: center; gap: 12px; padding: 12px 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); color: #fff; font-weight: 500; min-width: 250px;">
+                <span class="toast-icon" style="font-size: 1.2rem;">
+                    {% if message.tags == 'success' %}✅
+                    {% elif message.tags == 'error' %}❌
+                    {% elif message.tags == 'warning' %}⚠️
+                    {% else %}ℹ️{% endif %}
+                </span>
+                <span class="toast-msg">{{ message }}</span>
+                <button class="toast-close" onclick="this.parentElement.style.display='none';" style="margin-left: auto; background: transparent; border: none; color: white; font-size: 1.2rem; cursor: pointer; opacity: 0.8;">&times;</button>
+            </div>
+        {% endfor %}
+    </div>
+    <style>
+        .toast-success { background-color: #10b981; }
+        .toast-error { background-color: #ef4444; }
+        .toast-warning { background-color: #f59e0b; }
+        .toast-info { background-color: #3b82f6; }
+    </style>
+    <script>
+        setTimeout(function() {
+            let toasts = document.querySelectorAll('.custom-toast');
+            toasts.forEach(function(toast) {
+                toast.style.transition = "opacity 0.5s ease";
+                toast.style.opacity = "0";
+                setTimeout(() => toast.remove(), 500);
+            });
+        }, 4000);
+    </script>
+    {% endif %}
+
+    {% block content %} {% endblock %}
+
+    <script>
+        function toggleMenu() {
+            const wrapper = document.querySelector('.nav-links-wrapper');
+            wrapper.classList.toggle('active');
+        }
+    </script>
+
+    {% block extra_js %}{% endblock %}
+
+    <!-- استدعاء واجهة الشات بوت -->
+    {% include 'chatbot_widget.html' %}
+  </body>
+</html>

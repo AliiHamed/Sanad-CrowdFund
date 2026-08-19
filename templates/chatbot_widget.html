@@ -1,0 +1,55 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/chatbot.css' %}">
+
+<!-- Floating Button -->
+<button id="chatbot-toggle" class="chatbot-toggle">
+    <span class="bot-face">✦</span>
+</button>
+
+<!-- Chatbot Window -->
+<div id="chatbot-window" class="chatbot-window">
+
+    <!-- Header -->
+    <div class="chatbot-header">
+        <div class="bot-profile">
+            <div class="bot-avatar">✦</div>
+            <div>
+                <h3>Sanad AI</h3>
+                <span><i class="online-dot"></i>Online</span>
+            </div>
+        </div>
+        <button id="chatbot-close" class="close-btn">×</button>
+    </div>
+
+    <!-- Messages -->
+    <div id="chatbot-messages" class="chatbot-messages"></div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+        <button data-action="donation">💝 Find a Campaign</button>
+        <button data-action="campaign">✨ Improve Campaign</button>
+        <button data-action="prediction">📊 Funding Prediction</button>
+    </div>
+
+    <!-- Image Preview Area (مخفي افتراضياً) -->
+    <div id="image-preview-container" style="display: none; padding: 10px 15px; background: #f8fafc; border-top: 1px solid #f1f5f9; position: relative;">
+        <img id="image-preview" src="" style="height: 60px; border-radius: 8px; border: 1px solid #cbd5e1;">
+        <button id="remove-image" style="position: absolute; left: 80px; top: 5px; background: #ef4444; color: white; border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; font-size: 12px;">×</button>
+    </div>
+
+    <!-- Input -->
+    <div class="chatbot-input">
+        <!-- زرار رفع الصورة -->
+        <label for="chat-image-upload" class="upload-btn">
+            📎
+        </label>
+        <input type="file" id="chat-image-upload" accept="image/*" style="display: none;">
+
+        <input type="text" id="chatbot-input" placeholder="Ask Sanad AI...">
+        <button id="chatbot-send">➤</button>
+    </div>
+
+</div>
+
+<script src="{% static 'js/chatbot.js' %}"></script>

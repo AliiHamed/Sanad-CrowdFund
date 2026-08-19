@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Donation Notice - CrowdFund{% endblock %}
+
+{% block content %}
+<style>
+    /* تنسيقات التجاوب للشاشات الصغيرة */
+    @media (max-width: 768px) {
+        .donation-notice-box {
+            margin: 20px 15px !important;
+            padding: 20px !important;
+            width: auto !important;
+            box-sizing: border-box;
+        }
+        .donation-notice-box h2 {
+            font-size: 1.5rem !important;
+        }
+        .donation-notice-box p {
+            font-size: 1rem !important;
+        }
+        .donation-notice-box button {
+            font-size: 0.9rem !important;
+            padding: 12px 15px !important;
+            text-align: center !important;
+            white-space: normal !important;
+        }
+    }
+</style>
+
+<div class="container donation-notice-box" style="max-width: 650px; width: 100%; box-sizing: border-box; margin: 60px auto; background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 6px 15px rgba(0,0,0,0.08);">
+    <h2 style="color: #d9534f; margin-bottom: 20px; font-weight: bold;">Notice Regarding Your Donation</h2>
+    
+    <p style="color: #444; line-height: 1.7; font-size: 1.1rem; margin-bottom: 15px; word-break: break-word;">
+        Thank you so much for your incredible generosity towards <strong>{{ project.title }}</strong>! 
+    </p>
+    
+    <p style="color: #555; line-height: 1.7; margin-bottom: 20px; word-break: break-word;">
+        However, the project only requires <strong>{{ remaining }} EGP</strong> to reach its full funding goal, while you entered <strong>{{ entered_amount }} EGP</strong>. 
+    </p>
+
+    <div style="background: #fdfefe; border: 1px solid #e3e6e8; padding: 20px; border-radius: 8px; margin-bottom: 25px;">
+        <p style="margin: 0; color: #333; font-weight: 500;">Please choose how you would like to proceed with your contribution:</p>
+    </div>
+
+    <form method="POST" action="{% url 'complete_donation' %}">
+        {% csrf_token %}
+        <div style="display: flex; flex-direction: column; gap: 15px;">
+            
+            <!-- الخيار الأول: التبرع بالمبلغ المتبقي فقط -->
+            <button type="submit" name="choice" value="exact" style="background-color: #6c757d; color: white; padding: 14px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: bold; text-align: left; transition: 0.2s; box-sizing: border-box;">
+                📌 Donate only the exact remaining amount ({{ remaining }} EGP)
+            </button>
+
+            <!-- الخيار الثاني: إكمال المشروع وتحويل الزيادة للمحفظة -->
+            <button type="submit" name="choice" value="full_with_wallet" style="background-color: #28a745; color: white; padding: 14px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: bold; text-align: left; transition: 0.2s; box-sizing: border-box;">
+                💰 Donate {{ remaining }} EGP to the project & add the excess ({{ excess }} EGP) to my Wallet
+            </button>
+
+        </div>
+    </form>
+</div>
+{% endblock %}

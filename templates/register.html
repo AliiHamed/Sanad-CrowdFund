@@ -1,0 +1,328 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Create Account - Sanad CrowdFund{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        background-color: #f8fafc;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        overflow-x: hidden;
+    }
+
+    .register-wrapper {
+        max-width: 750px;
+        margin: 40px auto 60px;
+        padding: 0 20px;
+        box-sizing: border-box;
+    }
+
+    .register-card {
+        background: #ffffff;
+        border-radius: 20px;
+        box-shadow: 0 4px 25px rgba(0, 0, 0, 0.04);
+        padding: 40px;
+        border: 1px solid #f1f5f9;
+        box-sizing: border-box;
+    }
+
+    .register-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .register-header h2 {
+        color: #0f172a;
+        font-size: 1.8rem;
+        font-weight: 800;
+        margin: 0 0 6px 0;
+        letter-spacing: -0.5px;
+        word-break: break-word;
+    }
+
+    .register-header p {
+        color: #64748b;
+        font-size: 0.95rem;
+        margin: 0;
+    }
+
+    /* فورم بتنسيق عمودين متناسق */
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    @media (max-width: 600px) {
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+        .register-wrapper {
+            margin: 20px auto;
+            padding: 0 10px;
+        }
+        .register-card {
+            padding: 20px 15px;
+        }
+    }
+
+    .input-group {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 5px;
+        min-width: 0;
+    }
+
+    .input-group.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .input-group label {
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: #334155;
+        margin-bottom: 8px;
+    }
+
+    /* تنسيق كلمة اختياري */
+    .optional-text {
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: #94a3b8;
+        margin-left: 4px;
+    }
+
+    .input-group input, 
+    .input-group select {
+        padding: 12px 16px;
+        border: 1px solid #cbd5e1;
+        border-radius: 12px;
+        font-size: 0.95rem;
+        color: #1e293b;
+        background-color: #f8fafc;
+        transition: all 0.3s ease;
+        font-family: inherit;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .input-group input:focus, 
+    .input-group select:focus {
+        background-color: #ffffff;
+        border-color: #2563eb;
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        outline: none;
+    }
+
+    /* تصميم مخصص لرفع الصورة الشخصية - استغلال المساحة بشكل احترافي */
+    .file-upload-wrapper {
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .file-upload-wrapper input[type="file"] {
+        position: absolute;
+        left: 0; top: 0; opacity: 0; cursor: pointer; height: 100%; width: 100%; z-index: 10;
+    }
+
+    .file-upload-design {
+        display: flex;
+        flex-direction: column; /* نخلي الأيقونة فوق النص */
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        padding: 25px 16px; /* مساحة أكبر عشان تملى المكان بشياكة */
+        border: 2px dashed #cbd5e1; /* إطار أسمك شوية */
+        background-color: #f8fafc;
+        border-radius: 12px;
+        color: #64748b;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+        text-align: center;
+    }
+
+    .file-upload-wrapper:hover .file-upload-design {
+        background-color: #f1f5f9;
+        border-color: #2563eb;
+        color: #2563eb;
+    }
+
+    .file-upload-design svg {
+        width: 28px; /* كبرنا الأيقونة شوية */
+        height: 28px; 
+        color: inherit; 
+        flex-shrink: 0;
+    }
+
+    .file-upload-design .file-name {
+        font-weight: 600; color: #0f172a; word-break: break-word;
+    }
+
+    /* زر التسجيل */
+    .form-actions {
+        margin-top: 25px;
+        padding-top: 20px;
+        border-top: 1px solid #f1f5f9;
+        text-align: center;
+    }
+
+    .btn-submit {
+        background-color: #2563eb;
+        color: white;
+        padding: 14px;
+        border: none;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.25);
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .btn-submit:hover {
+        background-color: #1d4ed8;
+        transform: translateY(-2px);
+    }
+
+    .login-redirect {
+        margin-top: 20px;
+        text-align: center;
+        font-size: 0.9rem;
+        color: #64748b;
+    }
+
+    .login-redirect a {
+        color: #2563eb;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    .login-redirect a:hover {
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="register-wrapper">
+    <div class="register-card">
+        <div class="register-header">
+            <h2>Create Account</h2>
+            <p>Join Sanad CrowdFund today</p>
+        </div>
+
+        <form method="POST" action="{% url 'register' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="form-grid">
+                <div class="input-group">
+                    <label for="first_name">First Name</label>
+                    <input type="text" name="first_name" id="first_name" placeholder="First Name" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="last_name">Last Name</label>
+                    <input type="text" name="last_name" id="last_name" placeholder="Last Name" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input type="email" name="email" id="email" placeholder="Email Address" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="phone">Phone</label>
+                    <input type="tel" 
+                           name="phone" 
+                           id="phone" 
+                           placeholder="EX:01123456789" 
+                           maxlength="11" 
+                           pattern="01[0125][0-9]{8}" 
+                           title="Please enter a valid Egyptian phone number (11 digits starting with 010, 011, 012, or 015)"
+                           required>
+                </div>
+
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password" placeholder="Password" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="confirm_password">Confirm Password</label>
+                    <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm Password" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="birth_date">Birth Date</label>
+                    <input type="text" 
+                           name="birth_date" 
+                           id="birth_date" 
+                           placeholder="mm/dd/yyyy" 
+                           onfocus="this.type='date'" 
+                           onblur="if(!this.value) this.type='text'"
+                           required>
+                </div>
+
+                <!-- حقل الفيسبوك مع كلمة Optional بتنسيق صغير وهادي -->
+                <div class="input-group">
+                    <label for="facebook">Facebook Profile <span class="optional-text">(Optional)</span></label>
+                    <input type="url" name="facebook" id="facebook" placeholder="https://facebook.com/...">
+                </div>
+
+                <!-- حقل الدولة المخفي -->
+                <input type="hidden" name="country" value="Egypt">
+
+                <!-- حقل الصورة واخد مساحة الفورم وشكله احترافي -->
+                <div class="input-group full-width">
+                    <label>Profile Picture</label>
+                    <div class="file-upload-wrapper">
+                        <input type="file" name="profile_picture" id="profile_picture" accept="image/*">
+                        <div class="file-upload-design">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                            <span id="file-name">Choose Profile Picture</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-submit">Register</button>
+            </div>
+        </form>
+
+        <div class="login-redirect">
+            Already have an account? <a href="{% url 'login' %}">Login</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('profile_picture').addEventListener('change', function(e) {
+        let fileName = e.target.files[0] ? e.target.files[0].name : 'Choose Profile Picture';
+        document.getElementById('file-name').innerHTML = `<span class="file-name">${fileName}</span>`;
+    });
+
+    // منع اختيار تاريخ ميلاد في المستقبل
+    const dateInput = document.getElementById('birth_date');
+    if (dateInput) {
+        // الحصول على تاريخ اليوم وتحويله لصيغة YYYY-MM-DD
+        const today = new Date().toISOString().split('T')[0];
+        // تحديد الحد الأقصى المسموح اختياره
+        dateInput.max = today;
+    }
+
+    // فلترة رقم التليفون (أرقام فقط، مع السماح بكتابة أي رقم وإظهار رسالة خطأ عند التسجيل)
+    const phoneInput = document.getElementById('phone');
+    if (phoneInput) {
+        phoneInput.addEventListener('input', function(e) {
+            // امسح أي حاجة مش أرقام بس (عشان ميقدرش يكتب حروف)
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+    }
+</script>
+{% endblock %}

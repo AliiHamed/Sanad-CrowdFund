@@ -1,0 +1,193 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - CrowdFund</title>
+
+    <!-- استدعاء خط المنصة الموحد -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/login.css' %}" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    
+    <style>
+      /* توحيد خط الشاشة بالكامل ليتطابق مع باقي الموقع */
+      body {
+        font-family: 'Plus Jakarta Sans', sans-serif !important;
+        background-color: #f8fafc !important;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+      }
+      .login-container {
+        box-sizing: border-box;
+      }
+      .login-box {
+        border-radius: 20px !important;
+        box-shadow: 0 4px 25px rgba(0, 0, 0, 0.04) !important;
+        border: 1px solid #f1f5f9 !important;
+        box-sizing: border-box !important;
+      }
+      .login-box h2 {
+        font-weight: 800 !important;
+        color: #0f172a !important;
+        letter-spacing: -0.5px;
+      }
+      .login-box p {
+        color: #64748b !important;
+      }
+      .login-box label {
+        font-weight: 700 !important;
+        color: #334155 !important;
+      }
+      .login-box input {
+        border-radius: 12px !important;
+        border: 1px solid #cbd5e1 !important;
+        background-color: #f8fafc !important;
+        color: #1e293b !important;
+        font-family: inherit !important;
+        padding: 12px 16px !important; /* ضمان مسافات داخلية مريحة */
+        width: 100% !important;
+        box-sizing: border-box !important;
+      }
+      .login-box input:focus {
+        background-color: #ffffff !important;
+        border-color: #2563eb !important;
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1) !important;
+        outline: none !important;
+      }
+
+      /* =========================================
+         التعديل هنا: دمج زرار Show داخل حقل الباسورد
+         ========================================= */
+      .password-box {
+        position: relative !important;
+        display: block !important;
+        width: 100% !important;
+      }
+      .password-box input {
+        padding-right: 65px !important; /* مساحة في اليمين عشان الكلام ميغطيش على الزرار */
+      }
+      .show-btn {
+        position: absolute !important;
+        right: 15px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        background: transparent !important; /* إزالة الخلفية الرمادية */
+        border: none !important;
+        color: #64748b !important;
+        font-weight: 700 !important;
+        font-size: 0.85rem !important;
+        cursor: pointer !important;
+        padding: 0 !important;
+        height: auto !important;
+        width: auto !important;
+        transition: color 0.3s ease !important;
+      }
+      .show-btn:hover {
+        color: #2563eb !important; /* يقلب أزرق شيك لما تقف عليه */
+        background: transparent !important;
+      }
+      /* ========================================= */
+
+      .login-box button[type="submit"] {
+        background-color: #2563eb !important;
+        border-radius: 12px !important;
+        font-weight: 700 !important;
+        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.25) !important;
+        transition: all 0.3s ease !important;
+        width: 100% !important;
+        padding: 14px !important;
+        border: none !important;
+        color: white !important;
+        cursor: pointer !important;
+        margin-top: 10px !important;
+        box-sizing: border-box !important;
+      }
+      .login-box button[type="submit"]:hover {
+        background-color: #1d4ed8 !important;
+        transform: translateY(-2px);
+      }
+
+      /* Responsive adjustments for smaller screens */
+      @media (max-width: 480px) {
+        .login-container {
+            padding: 15px !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-box {
+            padding: 25px 20px !important;
+            width: 100% !important;
+            margin: 0 !important;
+        }
+        .login-box h2 {
+            font-size: 1.5rem !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- خلينا الطول 100vh عشان البوكس يتسنتر في نص الشاشة بالظبط بعد ما شيلنا الـ Navbar -->
+    <div class="login-container" style="min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px;">
+      <div class="login-box" style="width: 100%; max-width: 420px; padding: 40px; background: #ffffff;">
+        <h2>Welcome Back</h2>
+        <p>Login to your CrowdFund account</p>
+
+        <!-- عرض رسالة الخطأ بشكل نظيف ومنسق بدون تراكم -->
+        {% if error %}
+            <div style="margin-bottom: 15px;">
+                <div style="padding: 10px 15px; background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 5px; font-size: 0.9rem; text-align: center; word-break: break-word;" role="alert">
+                    <span>{{ error }}</span>
+                </div>
+            </div>
+        {% endif %}
+
+        <form method="POST" action="{% url 'login' %}">
+          {% csrf_token %}
+          <div class="input-group" style="margin-bottom: 20px;">
+            <label style="display: block; margin-bottom: 8px; font-size: 0.85rem;">Email</label>
+            <input
+              type="email"
+              name="email"
+              id="email"
+              placeholder="Enter your email"
+              required
+            />
+          </div>
+          <div class="input-group" style="margin-bottom: 20px;">
+            <label style="display: block; margin-bottom: 8px; font-size: 0.85rem;">Password</label>
+            <div class="password-box">
+              <input
+                type="password"
+                name="password"
+                id="password"
+                placeholder="Enter your password"
+                required
+              />
+              <button type="button" id="togglePassword" class="show-btn">
+                Show
+              </button>
+            </div>
+            <div style="text-align: right; margin-top: 5px;">
+              <a href="{% url 'forgot_password' %}" style="font-size: 0.85rem; color: #2563eb; text-decoration: none; font-weight: 600;">Forgot Password?</a>
+            </div>
+          </div>
+          <button type="submit">Login</button>
+        </form>
+
+        <p class="register-link" style="color: #64748b; margin-top: 20px; text-align: center; font-size: 0.9rem;">
+          Don't have an account?
+          <a href="{% url 'register' %}" style="color: #2563eb; font-weight: 700; text-decoration: none;">Register</a>
+        </p>
+      </div>
+    </div>
+
+    <script src="{% static 'js/login.js' %}"></script>
+  </body>
+</html>

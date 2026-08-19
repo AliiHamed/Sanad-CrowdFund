@@ -1,0 +1,116 @@
+/* Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:#f5f7fa;
+    color:#333;
+    overflow-x: hidden; /* لمنع ظهور سكرول أفقي مزعج بالموبايل */
+}
+
+a{
+    text-decoration:none;
+    color:inherit;
+}
+
+ul{
+    list-style:none;
+}
+
+/* Don't force all images to 100% width — each component controls its own images */
+img{
+    display:block;
+    max-width:100%;
+    height: auto; /* تعديل لضمان عدم تشوه الصور على الموبايل */
+}
+
+button{
+    cursor:pointer;
+    border:none;
+}
+
+.section-title{
+    text-align:center;
+    font-size:35px;
+    margin:60px 0 30px;
+    color:#0b5ed7;
+}
+
+/* ================= NAVBAR (Global) ================= */
+
+.navbar{
+    background:white;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px 80px;
+    box-shadow:0 2px 10px rgba(0,0,0,.1);
+    position:sticky;
+    top:0;
+    z-index:1000;
+    transition:0.4s;
+}
+
+.logo h2{
+    color:#0b5ed7;
+    font-size:30px;
+}
+
+.nav-links{
+    display:flex;
+    gap:30px;
+}
+
+.nav-links a{
+    font-size:18px;
+    font-weight:500;
+    transition:.3s;
+}
+
+.nav-links a:hover{
+    color:#0b5ed7;
+}
+
+.nav-logout{
+    color:#e74c3c !important;
+    font-weight:600;
+}
+
+.nav-logout:hover{
+    color:#c0392b !important;
+}
+
+/* ================= RESPONSIVE GLOBALS (إضافات التجاوب الشاملة) ================= */
+
+/* حماية الاستمارات والعناصر لتتطابق مع الشاشات الصغيرة */
+input, select, textarea, button {
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* تعديلات الشاشات المتوسطة والصغيرة (Tablet & Mobile) */
+@media (max-width: 768px) {
+    .navbar {
+        padding: 15px 20px; /* تقليص الحواشي للنافبار على الموبايل */
+    }
+
+    .logo h2 {
+        font-size: 24px;
+    }
+
+    .section-title {
+        font-size: 28px;
+        margin: 40px 0 20px;
+    }
+
+    /* لو فيه كروت أو حاويات رئيسية بتعرض جنب بعض، تنزل تحت بعض */
+    .container, .main-container {
+        padding: 0 15px;
+    }
+}

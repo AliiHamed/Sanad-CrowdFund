@@ -1,0 +1,600 @@
+{% extends 'base.html' %}
+<script>
+    // تمرير اسم المشروع برمجياً للشات بوت
+    window.CURRENT_PROJECT_CONTEXT = "{{ project.title }}";
+</script>
+{% load static %}
+
+{% block title %}{{ project.title }} - CrowdFund{% endblock %}
+
+{% block content %}
+<!-- ================= Premium UI Styles ================= -->
+<style>
+    /* الإعدادات العامة للصفحة */
+    .campaign-wrapper {
+        max-width: 1150px; /* تم تصغير العرض ليكون ملموم ومريح للعين */
+        margin: 40px auto 80px;
+        padding: 0 20px;
+        font-family: 'Plus Jakarta Sans', sans-serif !important; /* توحيد الخط مع الموقع */
+        color: #0f172a;
+        box-sizing: border-box;
+        overflow-x: hidden;
+    }
+
+    /* الهيدر والعنوان */
+    .campaign-header {
+        margin-bottom: 25px;
+        border-bottom: 1px solid #f1f5f9;
+        padding-bottom: 15px;
+    }
+
+    .badge-category {
+        display: inline-block;
+        background-color: #eff6ff;
+        color: #2563eb;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 12px;
+        border: 1px solid #dbeafe;
+    }
+
+    .campaign-title {
+        font-size: 2.2rem; /* تصغير حجم العنوان بشكل متناسق */
+        font-weight: 800;
+        color: #0f172a;
+        margin: 0;
+        line-height: 1.3;
+        letter-spacing: -0.5px;
+        word-break: break-word;
+    }
+
+    /* تقسيم الشاشة (جريد احترافي) */
+    .campaign-grid {
+        display: grid;
+        grid-template-columns: 1.8fr 1fr; /* نسبة أفضل وأريح للعين */
+        gap: 30px;
+        align-items: flex-start;
+    }
+
+    /* ================= الجزء الأيسر (القصة والصور) ================= */
+    .left-col {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+        min-width: 0; /* لمنع تمدد الجريد بسبب النصوص الطويلة */
+    }
+
+    /* سلايدر الصور (سينمائي) */
+    .image-showcase {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        border-radius: 20px;
+        overflow: hidden;
+        background-color: #f8fafc;
+        border: 1px solid #f1f5f9;
+        box-sizing: border-box;
+    }
+
+    .slider-track {
+        display: flex;
+        height: 100%;
+        transition: transform 0.4s ease-in-out;
+    }
+
+    .slider-track img {
+        min-width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .nav-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255, 255, 255, 0.9);
+        border: none;
+        width: 35px; /* تصغير الأزرار قليلاً */
+        height: 35px;
+        border-radius: 50%;
+        font-size: 1rem;
+        cursor: pointer;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        transition: 0.2s;
+    }
+
+    .nav-btn:hover { background: #fff; transform: translateY(-50%) scale(1.1); }
+    .nav-btn.prev { left: 10px; }
+    .nav-btn.next { right: 10px; }
+
+    /* كروت المحتوى (القصة والتعليقات) */
+    .content-card {
+        background: #fff;
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+        border: 1px solid #f1f5f9;
+        box-sizing: border-box;
+    }
+
+    .content-card h2 {
+        font-size: 1.25rem; /* تصغير العناوين الداخلية */
+        font-weight: 800;
+        margin-top: 0;
+        margin-bottom: 15px;
+        color: #0f172a;
+        border-bottom: 1px solid #f1f5f9;
+        padding-bottom: 12px;
+        word-break: break-word;
+    }
+
+    .story-text {
+        font-size: 0.95rem; /* حجم خط مناسب للقراءة */
+        line-height: 1.7;
+        color: #475569;
+        word-break: break-word;
+    }
+
+    /* ================= الجزء الأيمن (كارت التبرع الثابت) ================= */
+    .right-col {
+        position: sticky;
+        top: 25px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        min-width: 0;
+    }
+
+    .donation-card {
+        background: #fff;
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+        border: 1px solid #e2e8f0;
+        box-sizing: border-box;
+    }
+
+    .amount-display {
+        font-size: 2rem; /* تصغير الرقم الضخم */
+        font-weight: 800;
+        color: #0f172a;
+        margin: 0;
+        display: flex;
+        align-items: baseline;
+        gap: 5px;
+        flex-wrap: wrap;
+        word-break: break-word;
+    }
+
+    .amount-display span {
+        font-size: 1rem;
+        color: #64748b;
+        font-weight: 600;
+    }
+
+    .goal-text {
+        color: #64748b;
+        margin-top: 5px;
+        margin-bottom: 20px;
+        font-size: 0.85rem;
+        word-break: break-word;
+    }
+
+    /* شريط التقدم */
+    .progress-track {
+        background: #f1f5f9;
+        height: 8px; /* تصغير سمك الشريط */
+        border-radius: 10px;
+        overflow: hidden;
+        margin-bottom: 12px;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: #10b981;
+        border-radius: 10px;
+        transition: width 1s ease;
+    }
+
+    .stats-flex {
+        display: flex;
+        justify-content: space-between;
+        color: #334155;
+        font-weight: 700;
+        font-size: 0.85rem;
+        margin-bottom: 25px;
+        gap: 10px;
+    }
+
+    /* فورم التبرع */
+    .donate-input-group {
+        position: relative;
+        margin-bottom: 15px;
+    }
+    .donate-input-group span {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #64748b;
+        font-weight: 700;
+        font-size: 0.9rem;
+    }
+    .donate-input-group input {
+        width: 100%;
+        padding: 14px 15px 14px 55px; /* تظبيط الـ padding */
+        border: 1px solid #cbd5e1;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 700;
+        color: #0f172a;
+        box-sizing: border-box;
+        transition: 0.3s;
+        font-family: inherit;
+        outline: none;
+    }
+    .donate-input-group input:focus {
+        border-color: #10b981;
+        box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+    }
+
+    .btn-primary {
+        background: #10b981;
+        color: white;
+        width: 100%;
+        padding: 15px;
+        border: none;
+        border-radius: 12px;
+        font-size: 1.05rem;
+        font-weight: 800;
+        cursor: pointer;
+        transition: 0.3s;
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        box-sizing: border-box;
+    }
+    .btn-primary:hover { 
+        background: #059669; 
+        transform: translateY(-2px);
+    }
+
+    .project-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 20px;
+        padding-top: 15px;
+        border-top: 1px solid #f1f5f9;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #64748b;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    /* ================= التعليقات والمشاريع المشابهة ================= */
+    .comment-box {
+        border-bottom: 1px solid #f1f5f9;
+        padding: 15px 0;
+        margin-bottom: 0;
+    }
+    .comment-box:last-child { border-bottom: none; }
+    
+    .similar-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 25px;
+        margin-top: 30px;
+    }
+
+    .similar-card {
+        background: #fff;
+        border-radius: 18px;
+        overflow: hidden;
+        border: 1px solid #f1f5f9;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+        transition: 0.3s;
+        text-decoration: none;
+        color: inherit;
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
+    }
+    .similar-card:hover { 
+        transform: translateY(-5px); 
+        box-shadow: 0 10px 25px rgba(37, 99, 235, 0.08); 
+        border-color: #e2e8f0;
+    }
+    
+    /* ريسبونسيف للموبايل والشاشات الصغيرة */
+    @media (max-width: 992px) {
+        .campaign-grid { grid-template-columns: 1fr; }
+        .right-col { position: static; }
+        .campaign-wrapper { margin: 20px auto 40px; padding: 0 10px; }
+        .campaign-title { font-size: 1.7rem; }
+        .content-card, .donation-card { padding: 20px 15px; }
+    }
+</style>
+<!-- ================= End Premium UI Styles ================= -->
+
+<div class="campaign-wrapper">
+    
+    <!-- الهيدر -->
+    <div class="campaign-header">
+        <span class="badge-category">{{ project.category }}</span>
+        <h1 class="campaign-title">{{ project.title }}</h1>
+    </div>
+
+    <!-- المحتوى الرئيسي (الجريد) -->
+    <div class="campaign-grid">
+        
+        <!-- ================= العمود الأيسر (القصة) ================= -->
+        <div class="left-col">
+            
+            <!-- سلايدر الصور -->
+            <div class="image-showcase">
+                <div class="slider-track" id="sliderTrack">
+                    {% if project.image %}
+                        <img src="{{ project.image.url }}" alt="{{ project.title }}" />
+                    {% else %}
+                        <img src="{% static 'images/sanad-default.png' %}" alt="Default Image" />
+                    {% endif %}
+                    
+                    {% for img in project.images.all %}
+                        <img src="{{ img.image.url }}" alt="Slider Image" />
+                    {% endfor %}
+                </div>
+
+                {% if project.images.all %}
+                    <button class="nav-btn prev" onclick="moveSlide(-1)">&#10094;</button>
+                    <button class="nav-btn next" onclick="moveSlide(1)">&#10095;</button>
+                {% endif %}
+            </div>
+            <!-- القصة والتفاصيل -->
+            <div class="content-card">
+                <h2>About this project</h2>
+                <div class="story-text" style="margin-bottom: 25px;">
+                    {{ project.description|linebreaksbr }}
+                </div>
+
+                {% if project.story %}
+                    <h2 style="font-size: 1.15rem; margin-top: 30px; border-top: 1px solid #f1f5f9; padding-top: 20px;">Campaign Story</h2>
+                    <div class="story-text" style="color: #334155;">
+                        {{ project.story|linebreaksbr }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- التعليقات -->
+            <div class="content-card">
+                <h2>Comments ({{ comments.count }})</h2>
+
+                {% if request.user.is_authenticated %}
+                    <form method="POST" action="{% url 'add_comment' project.id %}" style="margin-bottom: 25px;">
+                        {% csrf_token %}
+                        <textarea name="comment" rows="3" placeholder="Leave a supportive comment..." required style="width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 12px; resize: vertical; font-family: inherit; font-size: 0.9rem; margin-bottom: 10px; outline: none; box-sizing: border-box;"></textarea>
+                        <button type="submit" style="background: #2563eb; color: white; padding: 10px 20px; border: none; border-radius: 10px; font-weight: 600; cursor: pointer;">Post Comment</button>
+                    </form>
+                {% else %}
+                    <div style="background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px dashed #cbd5e1; text-align: center; margin-bottom: 25px; font-size: 0.9rem; color: #64748b;">
+                        Please <a href="{% url 'login' %}" style="color: #2563eb; font-weight: 700; text-decoration: none;">login</a> to join the conversation.
+                    </div>
+                {% endif %}
+
+                <div style="display: flex; flex-direction: column;">
+                    {% for c in comments %}
+                        <div class="comment-box">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 5px;">
+                                <strong style="color: #0f172a; font-size: 0.9rem; word-break: break-word;">{{ c.user.first_name }} {{ c.user.last_name }}</strong>
+                                <span style="color: #94a3b8; font-size: 0.75rem; white-space: nowrap;">{{ c.date|date:"d M Y" }}</span>
+                            </div>
+                            <p style="margin: 0 0 10px 0; color: #475569; font-size: 0.9rem; line-height: 1.5; word-break: break-word;">{{ c.comment }}</p>
+
+                            <!-- الردود -->
+                            <div style="margin-left: 15px; padding-left: 15px; border-left: 2px solid #e2e8f0;">
+                                {% for r in c.interaction_comment_replies.all %}
+                                    <div style="margin-bottom: 10px;">
+                                        <strong style="color: #334155; font-size: 0.85rem; word-break: break-word;">{{ r.user.first_name }}</strong>
+                                        <p style="margin: 3px 0 0 0; color: #64748b; font-size: 0.85rem; word-break: break-word;">{{ r.reply }}</p>
+                                    </div>
+                                {% endfor %}
+
+                                {% if request.user.is_authenticated and c.id %}
+                                    <div style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap;">
+                                        <form method="POST" action="{% url 'add_reply' c.id %}" style="display: flex; gap: 5px; flex: 1; min-width: 185px;">
+                                            {% csrf_token %}
+                                            <input type="text" name="reply" placeholder="Reply..." required style="flex: 1; padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.8rem; outline: none; min-width: 0;">
+                                            <button type="submit" style="background: #e2e8f0; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.8rem; color: #334155; white-space: nowrap;">Reply</button>
+                                        </form>
+                                        <form method="POST" action="{% url 'report_comment' c.id %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="reason" value="Inappropriate content">
+                                            <button type="submit" style="background: #fee2e2; color: #dc2626; border: none; padding: 6px 10px; border-radius: 8px; cursor: pointer; font-size: 0.8rem;" title="Report Comment">🚩</button>
+                                        </form>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% empty %}
+                        <p style="text-align: center; color: #94a3b8; padding: 20px; font-size: 0.9rem; margin: 0;">No comments yet. Be the first!</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= العمود الأيمن (التبرع) ================= -->
+        <div class="right-col">
+            
+            <div class="donation-card">
+                <p class="amount-display">{{ project.current_amount }} <span>EGP</span></p>
+                <p class="goal-text">raised of {{ project.target_amount }} EGP goal</p>
+
+                <div class="progress-track">
+                    <div class="progress-fill" style="width: {{ progress }}%;"></div>
+                </div>
+                
+                <div class="stats-flex">
+                    <span>{{ progress }}% Funded</span>
+                    <span>End: {{ project.end_date|date:"d M Y" }}</span>
+                </div>
+
+                <!-- زرار التبرع الذي يفتح الـ Modal -->
+                <div class="donate-input-group">
+                    <span>EGP</span>
+                    <input type="number" id="donationInput" min="1" step="0.01" placeholder="Amount to donate" required>
+                </div>
+                <button type="button" onclick="openDonationModal()" class="btn-primary">Donate Now</button>
+
+                <div class="project-meta">
+                    <span>Status: <strong style="color:#0f172a;">{{ project.status }}</strong></span>
+                    <span>⭐ {{ avg_rating|default:"0.0" }} / 5.0</span>
+                </div>
+            </div>
+
+            <!-- كارت التقييم -->
+            <div class="donation-card" style="padding: 25px;">
+                <h3 style="margin: 0 0 15px 0; font-size: 1.05rem; font-weight: 800; color: #0f172a;">Rate this Project</h3>
+                {% if request.user.is_authenticated %}
+                    <form method="POST" action="{% url 'rate_project' project.id %}" style="display: flex; flex-direction: column; gap: 10px;">
+                        {% csrf_token %}
+                        <select name="score" required style="padding: 10px; border-radius: 10px; border: 1px solid #cbd5e1; outline: none; font-family: inherit; font-size: 0.9rem; width: 100%; box-sizing: border-box;">
+                            <option value="5">⭐⭐⭐⭐⭐ (5) Excellent</option>
+                            <option value="4">⭐⭐⭐⭐ (4) Very Good</option>
+                            <option value="3">⭐⭐⭐ (3) Good</option>
+                            <option value="2">⭐⭐ (2) Fair</option>
+                            <option value="1">⭐ (1) Poor</option>
+                        </select>
+                        <button type="submit" style="background: #0f172a; color: white; border: none; padding: 10px; border-radius: 10px; font-weight: 700; cursor: pointer;">Submit Rating</button>
+                    </form>
+                {% else %}
+                    <p style="font-size: 0.85rem; color: #64748b; margin: 0;"><a href="{% url 'login' %}" style="color: #2563eb; font-weight: 700; text-decoration: none;">Login</a> to rate.</p>
+                {% endif %}
+            </div>
+
+            <!-- خيارات الإبلاغ / الإلغاء -->
+            <div style="text-align: center;">
+                {% if request.user == project.owner %}
+                    <a href="#" onclick="confirmCancel(event, '{% url 'cancel_project' project.id %}')" style="display: block; background: #fee2e2; color: #dc2626; padding: 12px; border-radius: 12px; text-decoration: none; font-weight: 700; font-size: 0.9rem; box-sizing: border-box;">🚨 Cancel Campaign (< 25%)</a>
+                {% elif request.user.is_authenticated %}
+                    <form method="POST" action="{% url 'report_project' project.id %}" style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        {% csrf_token %}
+                        <input type="text" name="reason" placeholder="Report reason..." required style="flex: 1; min-width: 150px; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 0.9rem; outline: none; font-family: inherit; box-sizing: border-box;">
+                        <button type="submit" style="background: #f1f5f9; border: 1px solid #cbd5e1; padding: 10px 15px; border-radius: 10px; cursor: pointer;" title="Report Project">🚩</button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ================= المشاريع المشابهة ================= -->
+    {% if similar_projects %}
+        <div style="margin-top: 60px;">
+            <h2 style="font-size: 1.5rem; font-weight: 800; color: #0f172a; border-bottom: 2px solid #f1f5f9; padding-bottom: 12px; margin-bottom: 0; word-break: break-word;">You might also like</h2>
+            <div class="similar-grid">
+                {% for sim in similar_projects %}
+                    <a href="{% url 'project_details' sim.id %}" class="similar-card">
+                        {% if sim.image %}
+                            <img src="{{ sim.image.url }}" alt="{{ sim.title }}" style="width: 100%; height: 160px; object-fit: cover;">
+                        {% else %}
+                            <div style="width: 100%; height: 160px; background: #e2e8f0; display: flex; align-items: center; justify-content: center; color: #64748b; font-size: 0.9rem; font-weight: 600;">No Image</div>
+                        {% endif %}
+                        <div style="padding: 18px; box-sizing: border-box;">
+                            <h4 style="margin: 0 0 10px 0; font-size: 1.05rem; font-weight: 700; color: #1e293b; line-height: 1.4; word-break: break-word;">{{ sim.title|truncatechars:40 }}</h4>
+                            <p style="color: #059669; font-weight: 700; font-size: 0.9rem; margin: 0; word-break: break-word;">Goal: {{ sim.target_amount }} EGP</p>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+</div>
+
+<!-- Modal اختيار طريقة التبرع -->
+<div id="donationModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
+    <div style="background:#fff; width:380px; padding:30px; border-radius:16px; box-shadow:0 10px 25px rgba(0,0,0,0.2); text-align:center; box-sizing:border-box;">
+        <h3 style="margin-top:0; color:#0f172a; font-size:1.3rem;">Choose Payment Method</h3>
+        <p style="color:#64748b; font-size:0.95rem; margin-bottom:20px;">
+            Donation Amount: <strong id="modalDonationAmount" style="color:#0f172a;">0.00</strong> EGP
+        </p>
+
+        <form method="POST" action="{% url 'donate' project.id %}">
+            {% csrf_token %}
+            <input type="hidden" name="amount" id="finalDonationAmount">
+
+            <!-- خيار المحفظة -->
+            <button type="submit" name="payment_method" value="wallet" style="width:100%; padding:14px; margin-bottom:12px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:10px; cursor:pointer; text-align:left; display:flex; justify-content:space-between; align-items:center; transition:0.2s;">
+                <div>
+                    <div style="font-weight:600; color:#0f172a;">💼 Wallet Balance</div>
+                    <div style="font-size:0.8rem; color:#64748b;">Available: {{ request.user.userprofile.wallet|default:"0.00" }} EGP</div>
+                </div>
+                <span style="color:#10b981; font-weight:700;">Pay &rarr;</span>
+            </button>
+
+            <!-- خيار Paymob / Visa -->
+            <button type="submit" name="payment_method" value="paymob" style="width:100%; padding:14px; margin-bottom:15px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:10px; cursor:pointer; text-align:left; display:flex; justify-content:space-between; align-items:center; transition:0.2s;">
+                <div>
+                    <div style="font-weight:600; color:#0f172a;">💳 Credit Card / Paymob</div>
+                    <div style="font-size:0.8rem; color:#64748b;">Visa, Mastercard, Mobile Wallets</div>
+                </div>
+                <span style="color:#2563eb; font-weight:700;">Pay &rarr;</span>
+            </button>
+        </form>
+
+        <button onclick="document.getElementById('donationModal').style.display='none'" style="background:none; border:none; color:#94a3b8; font-weight:600; cursor:pointer;">
+            Cancel
+        </button>
+    </div>
+</div>
+
+<!-- مكتبة SweetAlert2 وسكربت السلايدر والإلغاء والمودال -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    let currentSlide = 0;
+    function moveSlide(direction) {
+        const track = document.getElementById('sliderTrack');
+        if (!track) return;
+        const total = track.children.length;
+        currentSlide = (currentSlide + direction + total) % total;
+        track.style.transform = `translateX(-${currentSlide * 100}%)`;
+    }
+
+    function confirmCancel(event, url) {
+        event.preventDefault();
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You are about to cancel this campaign. This action cannot be undone!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc2626',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: 'Yes, cancel it!',
+            cancelButtonText: 'No, keep it'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            }
+        });
+    }
+
+    function openDonationModal() {
+        const amountInput = document.getElementById('donationInput');
+        const amount = amountInput.value;
+        if (!amount || parseFloat(amount) <= 0) {
+            Swal.fire({
+                title: 'Invalid Amount',
+                text: 'Please enter a valid amount to donate.',
+                icon: 'warning'
+            });
+            return;
+        }
+        document.getElementById('modalDonationAmount').innerText = parseFloat(amount).toFixed(2);
+        document.getElementById('finalDonationAmount').value = amount;
+        document.getElementById('donationModal').style.display = 'flex';
+    }
+</script>
+{% endblock %}

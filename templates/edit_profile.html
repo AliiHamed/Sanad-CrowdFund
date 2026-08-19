@@ -1,0 +1,286 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit Profile - CrowdFund{% endblock %}
+
+{% block extra_css %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+    body {
+        background-color: #f8fafc;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .edit-wrapper {
+        max-width: 750px;
+        margin: 60px auto;
+        padding: 0 20px;
+        box-sizing: border-box;
+    }
+
+    .edit-card {
+        background: #ffffff;
+        border-radius: 20px;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+        padding: 40px;
+        border: 1px solid #f1f5f9;
+        box-sizing: border-box;
+    }
+
+    .edit-header {
+        text-align: center;
+        margin-bottom: 35px;
+    }
+
+    .edit-header h2 {
+        color: #0f172a;
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin: 0 0 8px 0;
+    }
+
+    .edit-header p {
+        color: #64748b;
+        font-size: 0.95rem;
+        margin: 0;
+    }
+
+    /* Form Grid */
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    @media (max-width: 600px) {
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+        .edit-wrapper {
+            margin: 20px auto;
+            padding: 0 10px;
+        }
+        .edit-card {
+            padding: 20px 15px;
+        }
+        .form-actions {
+            flex-direction: column-reverse;
+        }
+        .btn-save, .btn-cancel {
+            width: 100%;
+        }
+    }
+
+    .input-group {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 20px;
+    }
+
+    .input-group.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .input-group label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #475569;
+        margin-bottom: 8px;
+    }
+
+    .input-group input {
+        padding: 12px 16px;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        font-size: 0.95rem;
+        color: #1e293b;
+        background-color: #f8fafc;
+        transition: all 0.3s ease;
+        font-family: inherit;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .input-group input:focus {
+        background-color: #ffffff;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        outline: none;
+    }
+
+    /* Custom File Input Styling */
+    .file-upload-wrapper {
+        position: relative;
+        overflow: hidden;
+        display: inline-block;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .file-upload-wrapper input[type="file"] {
+        position: absolute;
+        left: 0;
+        top: 0;
+        opacity: 0;
+        cursor: pointer;
+        height: 100%;
+        width: 100%;
+    }
+
+    .file-upload-design {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        border: 1px dashed #cbd5e1;
+        background-color: #f8fafc;
+        border-radius: 10px;
+        color: #64748b;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+    }
+
+    .file-upload-wrapper:hover .file-upload-design {
+        background-color: #f1f5f9;
+        border-color: #94a3b8;
+    }
+
+    .file-upload-design svg {
+        width: 20px;
+        height: 20px;
+        color: #3b82f6;
+        flex-shrink: 0;
+    }
+
+    .file-upload-design span {
+        word-break: break-word;
+    }
+
+    /* Action Buttons */
+    .form-actions {
+        display: flex;
+        gap: 15px;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid #f1f5f9;
+    }
+
+    .btn-save {
+        flex: 2;
+        background-color: #2563eb;
+        color: white;
+        padding: 14px;
+        border: none;
+        border-radius: 10px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.1s ease;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+        box-sizing: border-box;
+    }
+
+    .btn-save:hover {
+        background-color: #1d4ed8;
+    }
+
+    .btn-save:active {
+        transform: scale(0.98);
+    }
+
+    .btn-cancel {
+        flex: 1;
+        background-color: #ffffff;
+        color: #475569;
+        padding: 14px;
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-align: center;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+    }
+
+    .btn-cancel:hover {
+        background-color: #f1f5f9;
+        color: #0f172a;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="edit-wrapper">
+    <div class="edit-card">
+        <div class="edit-header">
+            <h2>Edit Profile</h2>
+            <p>Update your personal information and keep your profile up to date.</p>
+        </div>
+
+        <form method="POST" action="{% url 'edit_profile' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="form-grid">
+                <!-- First Name -->
+                <div class="input-group">
+                    <label for="first_name">First Name</label>
+                    <input type="text" name="first_name" id="first_name" value="{{ request.user.first_name }}" placeholder="e.g. Ali">
+                </div>
+
+                <!-- Last Name -->
+                <div class="input-group">
+                    <label for="last_name">Last Name</label>
+                    <input type="text" name="last_name" id="last_name" value="{{ request.user.last_name }}" placeholder="e.g. Hamed">
+                </div>
+
+                <!-- Phone (Validation: Numbers only, 11 digits, starts with 01) -->
+                <div class="input-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="text" name="phone" id="phone" value="{{ profile.phone_number|default:'' }}" 
+                           placeholder="e.g. 01012345678" 
+                           pattern="^01[0125][0-9]{8}$" 
+                           title="Must be a valid Egyptian phone number (11 digits starting with 010, 011, 012, or 015)" 
+                           oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 11)" 
+                           required>
+                </div>
+
+                <!-- Birth Date -->
+                <div class="input-group">
+                    <label for="birth_date">Birth Date</label>
+                    <input type="date" name="birth_date" id="birth_date" value="{{ profile.birth_date|date:'Y-m-d' }}">
+                </div>
+
+                <!-- Profile Picture -->
+                <div class="input-group full-width">
+                    <label>Profile Picture</label>
+                    <div class="file-upload-wrapper">
+                        <input type="file" name="profile_picture" id="profile_picture" accept="image/*">
+                        <div class="file-upload-design">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                            <span id="file-name">Choose a new profile picture...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <a href="{% url 'profile' %}" class="btn-cancel">Cancel</a>
+                <button type="submit" class="btn-save">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.getElementById('profile_picture').addEventListener('change', function(e) {
+        var fileName = e.target.files[0].name;
+        document.getElementById('file-name').textContent = fileName;
+    });
+</script>
+{% endblock %}

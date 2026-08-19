@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}AI Analytics Dashboard - Sanad{% endblock %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 40px auto; padding: 20px; font-family: 'Plus Jakarta Sans', sans-serif;">
+    
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-bottom: 15px; border-bottom: 2px solid #e2e8f0;">
+        <h1 style="color: #0f172a; margin: 0; display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 2rem;">📊</span> AI Analytics Dashboard
+        </h1>
+        <div style="background: #10b981; color: white; padding: 10px 20px; border-radius: 12px; font-weight: bold;">
+            Total Queries: {{ total_queries }}
+        </div>
+    </div>
+
+    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 20px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.03);">
+        <h2 style="color: #2563eb; font-size: 1.2rem; margin-top: 0; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+            ✦ Gemini AI Insights
+        </h2>
+        
+        <!-- هنا هيتم عرض التقرير اللي الذكاء الاصطناعي كتبه -->
+        <div style="color: #334155; line-height: 1.8;">
+            {{ ai_report|safe }}
+        </div>
+    </div>
+    
+</div>
+{% endblock %}

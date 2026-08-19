@@ -1,0 +1,283 @@
+/* ================= Hero Section ================= */
+
+.hero{
+    height:80vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+}
+
+.hero-content{
+    background:rgba(0,0,0,.55);
+    padding:50px;
+    border-radius:15px;
+    color:white;
+}
+
+.hero h1{
+    font-size:55px;
+    margin-bottom:20px;
+}
+
+.hero p{
+    font-size:20px;
+    width:700px;
+    max-width:100%;
+    margin:auto;
+    line-height:1.8;
+}
+
+.btn{
+    display:inline-block;
+    margin-top:30px;
+    padding:15px 35px;
+    background:#0b5ed7;
+    color:white;
+    border-radius:8px;
+    transition:.3s;
+    font-size:18px;
+}
+
+.btn:hover{
+    background:#084298;
+}
+
+
+/* ================= Latest Projects Section ================= */
+
+.latest-projects{
+    padding:60px 40px;
+    text-align:center;
+}
+
+.latest-projects h2{
+    font-size:35px;
+    margin-bottom:40px;
+    color:#0b5ed7;
+}
+
+.project-grid{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:25px;
+    width:100%;
+    max-width:1300px;
+    margin:0 auto;
+}
+
+.project-card{
+    background:white;
+    border-radius:15px;
+    overflow:hidden;
+    box-shadow:0 5px 15px rgba(0,0,0,.12);
+    transition:0.4s;
+    text-align:left;
+    display:flex;
+    flex-direction:column;
+}
+
+.project-card:hover{
+    transform:translateY(-10px);
+    box-shadow:0 15px 30px rgba(0,0,0,.2);
+}
+
+.project-card img{
+    width:100%;
+    height:180px;
+    object-fit:cover;
+    display:block;
+}
+
+.project-card h3{
+    margin:15px 15px 8px;
+    font-size:16px;
+    color:#222;
+}
+
+.project-card p{
+    margin:0 15px 15px;
+    font-size:14px;
+    color:#777;
+    flex:1;
+}
+
+.project-card a{
+    display:block;
+    padding:0 15px 15px;
+}
+
+.project-card button{
+    width:100%;
+    padding:10px;
+    background:#0b5ed7;
+    color:white;
+    border:none;
+    border-radius:8px;
+    font-size:15px;
+    transition:.3s;
+    cursor:pointer;
+}
+
+.project-card button:hover{
+    background:#084298;
+}
+
+
+/* ================= Categories ================= */
+
+.category-container{
+    width:90%;
+    margin:auto;
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    flex-wrap:wrap;
+    margin-bottom:60px;
+}
+
+.category-card{
+    background:#0b5ed7;
+    color:white;
+    padding:20px 35px;
+    border-radius:10px;
+    font-size:20px;
+    transition:.3s;
+}
+
+.category-card:hover{
+    transform:scale(1.08);
+}
+
+
+/* ================= Slider ================= */
+
+.slider{
+    width:90%;
+    margin:40px auto;
+}
+
+.slide{
+    display:none;
+    position:relative;
+}
+
+.slide.active{
+    display:block;
+}
+
+.slide img{
+    width:100%;
+    height:450px;
+    object-fit:cover;
+    border-radius:15px;
+}
+
+.slide-content{
+    position:absolute;
+    bottom:30px;
+    left:30px;
+    color:white;
+    background:rgba(0,0,0,0.5);
+    padding:15px;
+    border-radius:10px;
+}
+
+/* حالة الـ Empty State الخاصة بالهيدر لو مفيش مشاريع */
+.hero-empty-state{
+    width: 100%;
+    min-height: 380px;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+    margin-bottom: 50px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    padding: 40px 20px;
+    border-radius: 0 0 20px 20px;
+}
+.hero-empty-state h2{
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin: 0 0 10px 0;
+    color: #ffffff;
+}
+.hero-empty-state p{
+    color: #94a3b8;
+    font-size: 1rem;
+    margin: 0 0 25px 0;
+    max-width: 500px;
+}
+
+
+/* ================= Footer ================= */
+
+.footer{
+    background:#222;
+    color:white;
+    text-align:center;
+    padding:40px;
+}
+
+.footer h2{
+    color:#0b5ed7;
+    margin-bottom:15px;
+}
+
+.footer p{
+    margin:10px 0;
+}
+
+
+/* ================= Scroll Animation ================= */
+
+section{
+    opacity:1;
+    transform:translateY(0);
+    transition:0.8s ease;
+}
+
+section.animate{
+    animation:fadeInUp 0.8s ease forwards;
+}
+
+@keyframes fadeInUp{
+    from{
+        opacity:0;
+        transform:translateY(40px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+
+/* ================= Responsive ================= */
+
+@media (max-width:1100px){
+    .project-grid{
+        grid-template-columns:repeat(3, 1fr);
+    }
+}
+
+@media (max-width:768px){
+    .project-grid{
+        grid-template-columns:repeat(2, 1fr);
+    }
+    .hero h1{
+        font-size:35px;
+    }
+    .navbar{
+        padding:15px 20px;
+    }
+}
+
+@media (max-width:480px){
+    .project-grid{
+        grid-template-columns:1fr;
+    }
+}

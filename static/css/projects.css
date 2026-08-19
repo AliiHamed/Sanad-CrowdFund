@@ -1,0 +1,88 @@
+/* ================= Projects Page ================= */
+
+.projects-page {
+    width: 90%;
+    margin: 50px auto;
+}
+
+.projects-page h1 {
+    text-align: center;
+    color: #0b5ed7;
+    margin-bottom: 40px;
+    font-size: 35px;
+}
+
+/* ================= Grid ================= */
+
+.project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
+}
+
+/* ================= Card ================= */
+
+.project-card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, .15);
+    transition: .4s;
+    display: flex;
+    flex-direction: column;
+}
+
+.project-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 25px rgba(0, 0, 0, .2);
+}
+
+.project-card img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    display: block;
+}
+
+.project-card h3 {
+    margin: 15px 15px 5px;
+    color: #0b5ed7;
+    font-size: 17px;
+}
+
+.project-card p {
+    margin: 0 15px 15px;
+    color: #666;
+    font-size: 14px;
+    flex: 1;
+}
+
+.project-card a {
+    display: block;
+    padding: 0 15px 15px;
+}
+
+.project-card button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    background: #0b5ed7;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: .3s;
+}
+
+.project-card button:hover {
+    background: #084298;
+}
+
+/* ================= Responsive ================= */
+
+@media (max-width: 768px) {
+    .projects-page {
+        width: 95%;
+        margin: 30px auto;
+    }
+}
