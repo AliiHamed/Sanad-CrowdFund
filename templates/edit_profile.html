@@ -256,6 +256,12 @@
                     <input type="date" name="birth_date" id="birth_date" value="{{ profile.birth_date|date:'Y-m-d' }}">
                 </div>
 
+                <!-- Facebook Profile Link -->
+                <div class="input-group full-width">
+                    <label for="facebook">Facebook Profile Link</label>
+                    <input type="url" name="facebook" id="facebook" value="{{ profile.facebook_link|default:'' }}" placeholder="https://www.facebook.com/username">
+                </div>
+
                 <!-- Profile Picture -->
                 <div class="input-group full-width">
                     <label>Profile Picture</label>
@@ -279,8 +285,10 @@
 
 <script>
     document.getElementById('profile_picture').addEventListener('change', function(e) {
-        var fileName = e.target.files[0].name;
-        document.getElementById('file-name').textContent = fileName;
+        if (e.target.files.length > 0) {
+            var fileName = e.target.files[0].name;
+            document.getElementById('file-name').textContent = fileName;
+        }
     });
 </script>
 {% endblock %}

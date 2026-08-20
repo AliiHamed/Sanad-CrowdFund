@@ -173,7 +173,6 @@ def profile_view(request):
 
 
 # ----------------- 6. دالة تعديل البروفايل -----------------
-# في دالة edit_profile_view:
 @login_required(login_url='login')
 def edit_profile_view(request):
     profile, created = UserProfile.objects.get_or_create(user=request.user)
@@ -192,7 +191,10 @@ def edit_profile_view(request):
         profile.phone_number = phone
         profile.country = 'Egypt'  # ثابتة دائماً
         
-        # لا يوجد فيسبوك هنا (تم حذفه)
+        # استرجاع وتحديث رابط الفيسبوك بشكل آمن
+        facebook = request.POST.get('facebook') or request.POST.get('facebook_link')
+        if facebook is not None:
+            profile.facebook_link = facebook.strip()
         
         birth_date = request.POST.get('birth_date')
         if birth_date:
@@ -207,6 +209,8 @@ def edit_profile_view(request):
 
     context = {'profile': profile}
     return render(request, 'edit_profile.html', context)
+
+
 # ----------------- 7. دالة مسح الحساب -----------------
 @login_required(login_url='login')
 def delete_account_view(request):
@@ -243,7 +247,6 @@ def forgot_password_view(request):
             # محاولة إرسال البريد الإلكتروني
             send_mail(subject, message, 'crowdfunding.team.eg@gmail.com', [email])
             
-            # هذه الرسالة ستخزن وتظهر فقط بعد إتمام عملية الـ POST بنجاح
             messages.success(request, 'Password reset link sent! Please check your email.')
             return redirect('forgot_password')
             
@@ -251,7 +254,6 @@ def forgot_password_view(request):
             messages.error(request, 'No user found with this email.')
             return redirect('forgot_password')
         except Exception as e:
-            # معالجة خطأ انقطاع الاتصال بالسيرفر (ConnectionResetError) لتجنب انهيار الموقع
             messages.error(request, f'Failed to send email. Please check your SMTP settings or network.')
             return redirect('forgot_password')
             
@@ -282,8 +284,6 @@ def reset_password_view(request, uidb64, token):
     else:
         messages.error(request, 'The reset link is invalid or has expired!')
         return redirect('forgot_password')
-    
-    
     
     
 
@@ -319,7 +319,7 @@ def initiate_paymob_payment(request):
             )
             auth_token = auth_res.json().get("token")
 
-            # Step 2: Order Registration مع تضمين ID المستخدم لضمان وصول الرصيد له
+            # Step 2: Order Registration
             user = request.user
             merchant_order_id = f"WALLET_{user.id}_{int(time.time())}"
 
@@ -380,7 +380,6 @@ def initiate_paymob_payment(request):
 
 
 # === 2. دالة استقبال التأكيد وإعادة التوجيه وإضافة الرصيد ===
-# === دالة استقبال التأكيد وإعادة التوجيه ===
 @csrf_exempt
 def paymob_callback(request):
     data = request.GET if request.method == 'GET' else request.POST
